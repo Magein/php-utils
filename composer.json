@@ -1,0 +1,26 @@
+{
+  "name": "magein/ext-common",
+  "description": "php常用的一些工具类",
+  "keywords": [
+    "magein",
+    "php"
+  ],
+  "homepage": "https://github.com/magein/ext-common",
+  "autoload": {
+    "psr-4": {
+      "Magein\\Common\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "小马哥",
+      "email": "1154699897@qq.com"
+    }
+  ],
+  "license": "MIT",
+  "require": {
+    "php": "^7.4|^8.0",
+    "ext-json": "*",
+    "ext-curl": "*"
+  }
+}
