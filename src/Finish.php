@@ -2,7 +2,7 @@
 
 namespace Magein\Common;
 
-class Result
+class Finish
 {
     /**
      * @var int
@@ -57,7 +57,7 @@ class Result
      * @param $data
      * @return static
      */
-    public static function error(string $message = '', $code = 1, $data = null): Result
+    public static function error(string $message = '', $code = 1, $data = null): Finish
     {
         return new self($message, $code, $data);
     }
@@ -68,7 +68,7 @@ class Result
      * @param string $message
      * @return static
      */
-    public static function success($data = null, $code = 0, string $message = ''): Result
+    public static function success($data = null, $code = 0, string $message = ''): Finish
     {
         return new self($message, $code, $data);
     }
