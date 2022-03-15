@@ -5,9 +5,6 @@ namespace Magein\Common;
 /**
  * 驼峰，帕斯卡，下划线命名转化
  * Class Variable
- * @method static bool camelCase($number)
- * @method static bool pascal($number)
- * @method static bool underline($number)
  */
 class Variable
 {
@@ -16,7 +13,7 @@ class Variable
      * @param string $variable
      * @return string
      */
-    private function _camelCase(string $variable): string
+    public static function camelCase(string $variable): string
     {
         if (empty($variable)) {
             return $variable;
@@ -34,7 +31,7 @@ class Variable
      * @param string $variable
      * @return string
      */
-    private function _pascal(string $variable): string
+    public static function pascal(string $variable): string
     {
         if (empty($variable)) {
             return '';
@@ -52,7 +49,7 @@ class Variable
      * @param string $variable
      * @return string
      */
-    private function _underline(string $variable): string
+    public static function underline(string $variable): string
     {
         if (empty($variable)) {
             return '';

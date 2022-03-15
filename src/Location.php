@@ -30,7 +30,7 @@ class Location
      */
     public function __construct($data = null)
     {
-        $this->parse($data);
+        $this->chinese($data);
     }
 
     /**
@@ -83,6 +83,10 @@ class Location
      */
     public function toArray($flag = true): array
     {
+        if (empty($this->longitude) || empty($this->latitude)) {
+            return [];
+        }
+
         $data = [
             'longitude' => $this->longitude,
             'latitude' => $this->latitude,
@@ -96,13 +100,14 @@ class Location
     }
 
     /**
+     * 自动提取经纬度坐标，仅适用于中国范围的
      * @param $location
-     * @return null
+     * @return void
      */
-    private function parse($location)
+    private function chinese($location): void
     {
         if (empty($location)) {
-            return null;
+            return;
         }
 
         if ($location instanceof static) {
@@ -116,7 +121,7 @@ class Location
         $location = array_filter($location);
 
         if (count($location) < 2) {
-            return null;
+            return;
         }
 
         $location = array_values($location);
@@ -133,6 +138,5 @@ class Location
             $this->longitude = $first;
         }
 
-        return null;
     }
 }

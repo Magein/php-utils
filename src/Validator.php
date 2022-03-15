@@ -3,22 +3,16 @@
 namespace Magein\Common;
 
 /**
- * @method static bool phone($number)
- * @method static bool email($number)
- * @method static bool qq($number)
- * @method static bool idCard($number)
- * @method static bool url($number)
- * @method static bool ip($number)
- * @method static bool image($number)
+ * 一些常用的验证类
  */
 class Validator
 {
     /**
      * 验证手机
-     * @param $number
+     * @param string $number
      * @return bool
      */
-    private function _phone($number)
+    public static function phone(string $number): bool
     {
         if (!preg_match("/^13[0-9]{1}[0-9]{8}$|14[0-9]{1}[0-9]{8}$|15[0-9]{1}[0-9]{8}$|16[0-9]{1}[0-9]{8}$|17[0-9]{1}[0-9]{8}$|18[0-9]{1}[0-9]{8}$|19[0-9]{1}[0-9]{8}$/", $number)) {
             return false;
@@ -27,10 +21,10 @@ class Validator
     }
 
     /**
-     * @param $number
+     * @param string $number
      * @return bool
      */
-    private function _email($number)
+    public static function email(string $number): bool
     {
         if (!preg_match("/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/", $number)) {
             return false;
@@ -39,10 +33,10 @@ class Validator
     }
 
     /**
-     * @param $number
+     * @param string|int $number
      * @return bool
      */
-    private function _qq($number)
+    public static function qq($number): bool
     {
         if (!preg_match("/^[1-9]\d{4,}$/", $number)) {
             return false;
@@ -51,10 +45,10 @@ class Validator
     }
 
     /**
-     * @param $number
+     * @param string|int $number
      * @return bool
      */
-    private function _idCard($number)
+    public static function idCard($number): bool
     {
         if (!preg_match("/^\d{6}(19|20)\d{2}([0][1-9]|11|12)([0,1,2][1-9]|[3][0,1])\d{3}([0-9]|X|x)$/", $number)) {
             return false;
@@ -64,10 +58,10 @@ class Validator
 
     /**
      * url地址
-     * @param $number
+     * @param string $number
      * @return bool
      */
-    private function _url($number)
+    public static function url(string $number): bool
     {
         if (!preg_match("/[a-zA-z]+:\/\/[^\s]*/", $number)) {
             return false;
@@ -76,10 +70,10 @@ class Validator
     }
 
     /**
-     * @param $number
+     * @param string $number
      * @return bool
      */
-    private function _ip($number)
+    public static function ip(string $number): bool
     {
         if (!preg_match("/((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)/", $number)) {
             return false;
@@ -89,10 +83,10 @@ class Validator
 
     /**
      * 传递的是一个url 则自动获取格式，如果传递的是格式，则直接验证
-     * @param $url
+     * @param string $url
      * @return bool
      */
-    private function _image($url)
+    public static function image(string $url): bool
     {
         if (self::url($url)) {
             $ext = strtolower(pathinfo($url, PATHINFO_EXTENSION));
@@ -104,6 +98,23 @@ class Validator
             return true;
         }
 
+        return false;
+    }
+
+    /**
+     * 匹配汉字
+     * @param string $char
+     * @param array $length
+     * @return bool
+     */
+    public static function chinese(string $char, array $length = []): bool
+    {
+        $min = $length[0] ?? 2;
+        $max = $length[1] ?? 6;
+
+        if (preg_match("/^[\x{4e00}-\x{9fa5}]{" . $min . "," . $max . "}$/u", $char)) {
+            return true;
+        }
         return false;
     }
 }

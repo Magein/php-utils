@@ -2,12 +2,12 @@
 
 namespace Magein\Common;
 
-class Finish
+class Result
 {
     /**
      * @var int
      */
-    protected $code = 0;
+    protected int $code = 0;
 
     /**
      * @var string
@@ -18,18 +18,6 @@ class Finish
      * @var mixed
      */
     protected $data = null;
-
-    /**
-     * @param string $message
-     * @param int|string $code
-     * @param $data
-     */
-    public function __construct(string $message = '', $code = 1, $data = null)
-    {
-        $this->code = $code;
-        $this->message = $message;
-        $this->data = $data;
-    }
 
     /**
      * @return bool
@@ -69,7 +57,7 @@ class Finish
      * @param $data
      * @return static
      */
-    public static function error(string $message = '', $code = 1, $data = null): finish
+    public static function error(string $message = '', $code = 1, $data = null): Result
     {
         return new self($message, $code, $data);
     }
@@ -80,7 +68,7 @@ class Finish
      * @param string $message
      * @return static
      */
-    public static function success($data = null, $code = 0, string $message = ''): finish
+    public static function success($data = null, $code = 0, string $message = ''): Result
     {
         return new self($message, $code, $data);
     }
