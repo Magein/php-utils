@@ -2,8 +2,12 @@
 
 namespace Magein\PhpUtils;
 
+use Magein\PhpUtils\Traits\Instance;
+
 class FormatDate
 {
+    use Instance;
+
     /**
      * 转化为时间戳
      * @param $datetime
