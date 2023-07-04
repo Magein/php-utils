@@ -6,7 +6,7 @@
  * Time: 13:39
  */
 
-namespace Magein\Common;
+namespace Magein\PhpUtils;
 
 class Image
 {

@@ -1,14 +1,14 @@
 {
-  "name": "magein/ext-common",
+  "name": "magein/php-utils",
   "description": "php常用的一些工具类",
   "keywords": [
     "magein",
     "php"
   ],
-  "homepage": "https://github.com/magein/ext-common",
+  "homepage": "https://github.com/magein/php-utils",
   "autoload": {
     "psr-4": {
-      "Magein\\Common\\": "src/"
+      "Magein\\Traits\\": "src/"
     }
   },
   "authors": [
@@ -19,7 +19,7 @@
   ],
   "license": "MIT",
   "require": {
-    "php": "^7.4|^8.0",
+    "php": "^7.4",
     "ext-json": "*",
     "ext-curl": "*"
   }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Magein\Common;
+namespace Magein\PhpUtils;
 
 /**
  * 一些常用的验证类

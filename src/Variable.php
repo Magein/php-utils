@@ -1,6 +1,8 @@
 <?php
 
-namespace Magein\Common;
+namespace Magein\PhpUtils;
+
+use Magein\PhpUtils\Traits\Instance;
 
 /**
  * 驼峰，帕斯卡，下划线命名转化
@@ -8,12 +10,14 @@ namespace Magein\Common;
  */
 class Variable
 {
+    use Instance;
+
     /**
      * 下划线命名转化为驼峰命名
      * @param string $variable
      * @return string
      */
-    public static function camelCase(string $variable): string
+    public function camelCase(string $variable): string
     {
         if (empty($variable)) {
             return $variable;
@@ -31,7 +35,7 @@ class Variable
      * @param string $variable
      * @return string
      */
-    public static function pascal(string $variable): string
+    public function pascal(string $variable): string
     {
         if (empty($variable)) {
             return '';
@@ -49,7 +53,7 @@ class Variable
      * @param string $variable
      * @return string
      */
-    public static function underline(string $variable): string
+    public function underline(string $variable): string
     {
         if (empty($variable)) {
             return '';

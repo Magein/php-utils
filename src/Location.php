@@ -1,6 +1,6 @@
 <?php
 
-namespace Magein\Common;
+namespace Magein\PhpUtils;
 
 /**
  * 仅适用中国地区
