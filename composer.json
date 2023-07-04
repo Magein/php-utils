@@ -8,7 +8,7 @@
   "homepage": "https://github.com/magein/php-utils",
   "autoload": {
     "psr-4": {
-      "Magein\\Traits\\": "src/"
+      "Magein\\PhpUtils\\": "src/"
     }
   },
   "authors": [
