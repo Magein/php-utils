@@ -6,6 +6,9 @@ trait Instance
 {
     protected static $instance = null;
 
+    /**
+     * @return self
+     */
     public static function ins()
     {
         if (self::$instance === null) {
