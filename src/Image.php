@@ -10,127 +10,137 @@ namespace Magein\PhpUtils;
 
 class Image
 {
-    /**
-     *
-     * @param string $filepath
-     * @param string $ext
-     */
-    public function __construct(string $filepath, string $ext = '')
-    {
-        $this->setSavePath($filepath, $ext);
-    }
 
     /**
-     * $filepath 可以是路径，可以是文件名称，但是需要传递完整的
-     * 有效的值：
-     *  ./storage/images
-     *  ./storage/images/avatar.jpg
-     *  ./storage/images/avatar.png
-     * @param $filepath
-     * @param string $ext
-     * @return void
+     * 保存图片的路径
+     * @var string
      */
-    protected function setSavePath($filepath, string $ext = '')
+    protected $filepath = '';
+
+    /**
+     * 是否重新命名
+     * @var bool
+     */
+    protected $rename = false;
+
+    /**
+     * 直接渲染图片
+     * @var bool
+     */
+    protected $fetch = false;
+
+    /**
+     *  保存路径 文件名称为远程图片名称
+     *  ./storage/images
+     * @param $filepath
+     * @param bool $rename
+     */
+    public function setSavePath($filepath, bool $rename = false)
     {
-        $info = pathinfo($filepath);
-        $save_dir = $info['dirname'];
-        $filename = $info['filename'];
-        $ext = $info['extension'] ?? '';
+        $this->filepath = $filepath;
+
+        if (!is_dir($filepath)) {
+            mkdir($filepath, 0777, true);
+        }
+
+        $this->rename = (bool)$rename;
+
+        return $this;
+    }
+
+    public function setFetch($bool = true)
+    {
+        $this->fetch = (bool)$bool;
+
+        return $this;
     }
 
     /**
      * @param $content
-     * @return Result
+     * @param string $extension
+     * @return Result|void
      */
-    public function base64($content)
+    public function base64($content, string $extension = '')
     {
         if (empty($content)) {
             return Result::error('图片内容为空');
         }
 
-        if (empty($save_name)) {
-            return Result::error('请输入保存图片路径');
-        }
-
-        $save_name = pathinfo($save_name);
-        $save_dir = $save_name['dirname'];
-        $filename = $save_name['filename'];
-        $file_ext = $save_name['extension'] ?? '';
-
-        if (empty($ext)) {
-            $ext = $file_ext ?: 'png';
-        }
-
-        // 保存路径
-        $path = $save_dir . '/' . $filename . '.' . $ext;
-
-        //创建保存目录
-        if (!file_exists($save_dir) && !mkdir($save_dir, 0777, true)) {
-            return Result::error('图片保存路径创建失败');
+        if (empty($extension)) {
+            preg_match('/data:image\/(.+);/', $content, $matches);
+            $extension = $matches[1] ?? '';
+            if ($extension == 'jpeg') {
+                $extension = 'jpg';
+            }
         }
 
         if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $content, $result)) {
-            file_put_contents($path, base64_decode(str_replace($result[1], '', $content)));
+            $content = base64_decode(str_replace($result[1], '', $content));
         }
 
-        if (is_file($path)) {
-            return Result::success($path);
+        $filepath = '';
+        if ($this->filepath) {
+            $filename = md5(uniqid()) . '.' . $extension;
+            $filepath = trim($this->filepath, '/') . $filename;
+            file_put_contents($filepath, $content);
         }
 
-        return Result::error('图片保存失败');
+
+        if ($this->fetch) {
+            header("content-type:image/jpg;");
+            echo $content;
+            exit();
+        }
+
+        return Result::success($filepath);
     }
 
-    public function remote($url)
+    public function remote($url, $headers = [])
     {
         if (empty($url)) {
             return Result::error('请输入远程图片地址');
         }
 
-        if (empty($save_name)) {
-            return Result::error('请输入保存图片路径');
-        }
-
-        $save_name = pathinfo($save_name);
-
-        $save_dir = $save_name['dirname'];
-        $filename = $save_name['filename'];
-        $file_ext = $save_name['extension'] ?? '';
-        $origin_ext = strtolower(pathinfo($url, PATHINFO_EXTENSION));
-
-        if (empty($ext)) {
-            $ext = $file_ext ?: $origin_ext;
-        }
-
-        // 保存路径
-        $path = $save_dir . '/' . $filename . '.' . ($ext ?: 'png');
-
-        //创建保存目录
-        if (!file_exists($save_dir) && !mkdir($save_dir, 0777, true)) {
-            return Result::error('图片保存路径创建失败');
-        }
-
         //获取远程文件所采用的方法
         $ch = curl_init();
         $timeout = 5;
+
+        if (empty($headers)) {
+            $headers = [
+                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+            ];
+        }
+
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-        $img = curl_exec($ch);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $data = curl_exec($ch);
         $mime = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+        if (curl_errno($ch)) {
+            return Result::error(curl_error($ch));
+        }
         curl_close($ch);
         if (!preg_match('/image/', $mime)) {
-            return Result::error('图片远程地址异常');
+            return Result::error('远程地址mime类型不是图片类型');
         }
 
-        $fp2 = @fopen($path, 'a');
-        fwrite($fp2, $img);
-        fclose($fp2);
-        unset($img, $url);
-
-        if (is_file($path)) {
-            return Result::success($path);
+        if ($this->filepath) {
+            if ($this->rename) {
+                $ext = trim(str_replace('image', '', $mime), '/');
+                $filename = md5(uniqid()) . '.' . $ext;
+            } else {
+                $filename = pathinfo($url, PATHINFO_BASENAME);
+            }
+            file_put_contents(trim($this->filepath, '/') . $filename, $data);
         }
 
-        return Result::error('图片下载失败');
+        if ($this->fetch) {
+            header("content-type:$mime;");
+            echo $data;
+            exit();
+        }
+
+        return Result::success($data);
     }
 }
