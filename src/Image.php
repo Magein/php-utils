@@ -40,16 +40,16 @@ class Image
 
     /**
      * @param $content
-     * @return Finish
+     * @return Result
      */
     public function base64($content)
     {
         if (empty($content)) {
-            return Finish::error('图片内容为空');
+            return Result::error('图片内容为空');
         }
 
         if (empty($save_name)) {
-            return Finish::error('请输入保存图片路径');
+            return Result::error('请输入保存图片路径');
         }
 
         $save_name = pathinfo($save_name);
@@ -66,7 +66,7 @@ class Image
 
         //创建保存目录
         if (!file_exists($save_dir) && !mkdir($save_dir, 0777, true)) {
-            return Finish::error('图片保存路径创建失败');
+            return Result::error('图片保存路径创建失败');
         }
 
         if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $content, $result)) {
@@ -74,20 +74,20 @@ class Image
         }
 
         if (is_file($path)) {
-            return Finish::success($path);
+            return Result::success($path);
         }
 
-        return Finish::error('图片保存失败');
+        return Result::error('图片保存失败');
     }
 
     public function remote($url)
     {
         if (empty($url)) {
-            return Finish::error('请输入远程图片地址');
+            return Result::error('请输入远程图片地址');
         }
 
         if (empty($save_name)) {
-            return Finish::error('请输入保存图片路径');
+            return Result::error('请输入保存图片路径');
         }
 
         $save_name = pathinfo($save_name);
@@ -106,7 +106,7 @@ class Image
 
         //创建保存目录
         if (!file_exists($save_dir) && !mkdir($save_dir, 0777, true)) {
-            return Finish::error('图片保存路径创建失败');
+            return Result::error('图片保存路径创建失败');
         }
 
         //获取远程文件所采用的方法
@@ -119,7 +119,7 @@ class Image
         $mime = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
         curl_close($ch);
         if (!preg_match('/image/', $mime)) {
-            return Finish::error('图片远程地址异常');
+            return Result::error('图片远程地址异常');
         }
 
         $fp2 = @fopen($path, 'a');
@@ -128,9 +128,9 @@ class Image
         unset($img, $url);
 
         if (is_file($path)) {
-            return Finish::success($path);
+            return Result::success($path);
         }
 
-        return Finish::error('图片下载失败');
+        return Result::error('图片下载失败');
     }
 }

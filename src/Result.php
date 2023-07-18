@@ -8,7 +8,7 @@ class Result
     protected $msg = '';
     protected $data = null;
 
-    public static function error($message = '', $code = 1, $data = null)
+    public static function error($message = '', $code = 1, $data = null): Result
     {
         $result = new self();
         $result->code = $code;
@@ -18,7 +18,7 @@ class Result
         return $result;
     }
 
-    public static function success($data = null, $message = '', $code = 0)
+    public static function success($data = null, $message = '', $code = 0): Result
     {
         $result = new self();
         $result->code = $code;
@@ -33,7 +33,7 @@ class Result
         throw new \Exception(json_encode($this->toArray()));
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'code' => $this->code,
